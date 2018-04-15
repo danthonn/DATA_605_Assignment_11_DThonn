@@ -1,0 +1,128 @@
+---
+title: "DATA_605_Assignment_11_DThonn"
+file: DThonn_Assign11_DATA_605
+name: Daniel Thonn
+output:
+  html_document: default
+  pdf_document: default
+course: DATA 605 CUNY MSDA program
+---
+
+** DATA_605_Assignment_11_Thonn - Linear Regression-1  **
+
+http://rpubs.com/danthonn/380010
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``````{r, echo=TRUE}
+# install libraries if needed
+#install.packages("permutations")
+library(permutations)
+
+#install.packages('gtools')
+library(gtools)
+
+#install.packages('gvlma')
+library(gvlma)
+
+#install.packages('lmtest')
+library(lmtest)
+
+```
+
+** Assignment HW 11 **
+
+Using the "cars" dataset in R, build a linear model for stopping distance as a function of speed and replicate the analysis of your textbook chapter 3 (visualization, quality evaluation of the model, and residual analysis.)
+
+``````{r, echo=TRUE}
+
+# load R dataset cars into a dataframe
+cars1 <- cars
+head(cars1)
+#print(cars1)
+
+# examine the dataframe cars1 structure
+str(cars1)
+
+```
+
+# create a linear model and Visualize the data
+
+``````{r, echo=TRUE}
+# create a linear regression model for cars1
+cars1.lm <- lm(cars1$dist ~ cars1$speed)
+
+# plot the cars data
+plot(cars1$speed,cars1$dist)
+abline(cars1.lm)
+
+
+# Note: the data looks fairly linear and the model fits reasonably well by appearance
+
+```
+
+Check a summary of the cars1.lm model
+
+``````{r, echo=TRUE}
+summary(cars1.lm)
+
+# Findings:
+# The pr of the model is less than .05 (.0123) so is significant
+# The equation for the line is (y=stop_distance) y = -17.5791 + 3.9324 * x (x=speed)
+
+
+```
+
+Check the residuals
+``````{r, echo=TRUE}
+
+hist(cars1.lm$residuals)
+# the histogram of residuals shows a partial shape of normal distribution though skewed to the right
+# so not a perfect fit
+
+plot(fitted(cars1.lm),resid(cars1.lm))
+# the residuals are randomly distributedon on the residual chart which indicates good linearity
+
+# the sample model fits the theoretical between -2 and +1.5, thought there is divergence after +1.5
+# therefore, the model is a partial fit with some divergence
+qqnorm(resid(cars1.lm))
+qqline(resid(cars1.lm))
+
+
+```
+
+
+
+Check the gvlma function for overall criteria
+
+``````{r, echo=TRUE}
+gvlma(cars1.lm)
+# Note: there are several issues found in the output of this test.  See below for details.
+
+# Conclusion: 
+# There are issues in the gvlma check as shown below with prob < .05 for (3) criteria.
+# Heteroscedasticity, Skewness, and Global Stat fail
+# Conclusion: the cars1.lm model is less than an ideal model for the cars data.
+
+# Global Stat        15.801 0.003298 Assumptions NOT satisfied!
+# Skewness            6.528 0.010621 Assumptions NOT satisfied!
+# Kurtosis            1.661 0.197449    Assumptions acceptable.
+# Link Function       2.329 0.126998    Assumptions acceptable.
+# Heteroscedasticity  5.283 0.021530 Assumptions NOT satisfied!
+
+```
+
+
+
+
+** END **
+
+``````{r, echo=TRUE}
+
+```
+
+
+
+
